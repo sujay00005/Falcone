@@ -23,6 +23,68 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class DropdownPage extends StatefulWidget {
+  @override
+  _DropdownPageState createState() => _DropdownPageState();
+}
+
+class _DropdownPageState extends State<DropdownPage> {
+  List<String> _items = ['Option 1', 'Option 2', 'Option 3', 'Option 4'];
+  String? _selectedItem1;
+  String? _selectedItem2;
+
+  @override
+  Widget build(BuildContext context) {
+    // Filtered lists for each dropdown
+    List<String> remainingItems1 =
+        _items.where((item) => item != _selectedItem2).toList();
+    List<String> remainingItems2 =
+        _items.where((item) => item != _selectedItem1).toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Dropdown Sync Example'),
+      ),
+      body: Column(
+        children: <Widget>[
+          DropdownButton<String>(
+            value: _selectedItem1,
+            hint: Text('Select Item'),
+            onChanged: (value) {
+              setState(() {
+                _selectedItem1 = value;
+              });
+            },
+            items:
+                remainingItems1.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+          DropdownButton<String>(
+            value: _selectedItem2,
+            hint: Text('Select Item'),
+            onChanged: (value) {
+              setState(() {
+                _selectedItem2 = value;
+              });
+            },
+            items:
+                remainingItems2.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 // class MyHomePage extends StatefulWidget {
 //   const MyHomePage({super.key, required this.title});
 //

@@ -9,9 +9,9 @@ class PillDropdownButton extends StatefulWidget {
     required this.destination,
   });
 
-  final List<String> dropDownList;
+  final List<Planet> dropDownList;
   final double width;
-  final void Function(String) onSelectionChanged;
+  final void Function(Planet) onSelectionChanged;
   final String destination;
 
   @override
@@ -19,7 +19,7 @@ class PillDropdownButton extends StatefulWidget {
 }
 
 class PillDropdownButtonState extends State<PillDropdownButton> {
-  String? selectedItem;
+  Planet? selectedItem;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class PillDropdownButtonState extends State<PillDropdownButton> {
           child: Row(
             children: <Widget>[
               const SizedBox(width: 10.0),
-              DropdownButton<String>(
+              DropdownButton<Planet>(
                 underline: const SizedBox(),
                 value: selectedItem,
                 dropdownColor: AppColors.kPrimaryColor,
@@ -58,11 +58,11 @@ class PillDropdownButtonState extends State<PillDropdownButton> {
                   color: AppColors.white,
                   size: 20,
                 ),
-                items: widget.dropDownList.map((String value) {
-                  return DropdownMenuItem<String>(
+                items: widget.dropDownList.map((Planet value) {
+                  return DropdownMenuItem<Planet>(
                     value: value,
                     child: Text(
-                      value,
+                      value.name!,
                       style: const TextStyle(color: AppColors.white),
                     ),
                   );

@@ -1,5 +1,4 @@
 import 'package:finding_flacone/import.dart';
-
 import 'home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -10,6 +9,32 @@ class HomeView extends GetView<HomeController> {
     return GetBuilder<HomeController>(
       init: HomeController(),
       builder: (controller) {
+        // Filter planets for each destination dropdown
+        List<Planet> planets1 = controller.planets
+            .where((item) =>
+                item != controller.planet2.value &&
+                item != controller.planet3.value &&
+                item != controller.planet4.value)
+            .toList();
+        List<Planet> planets2 = controller.planets
+            .where((item) =>
+                item != controller.planet1.value &&
+                item != controller.planet3.value &&
+                item != controller.planet4.value)
+            .toList();
+        List<Planet> planets3 = controller.planets
+            .where((item) =>
+                item != controller.planet1.value &&
+                item != controller.planet2.value &&
+                item != controller.planet4.value)
+            .toList();
+        List<Planet> planets4 = controller.planets
+            .where((item) =>
+                item != controller.planet1.value &&
+                item != controller.planet2.value &&
+                item != controller.planet3.value)
+            .toList();
+
         return SafeArea(
           child: Scaffold(
             backgroundColor: AppColors.kPrimaryColor,
@@ -62,13 +87,13 @@ class HomeView extends GetView<HomeController> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        planetAndVehicle(controller, "Destination 1",
+                        planetAndVehicle(controller, planets1, "Destination 1",
                             controller.planet1, controller.vehicle1),
-                        planetAndVehicle(controller, "Destination 2",
+                        planetAndVehicle(controller, planets2, "Destination 2",
                             controller.planet2, controller.vehicle2),
-                        planetAndVehicle(controller, "Destination 3",
+                        planetAndVehicle(controller, planets3, "Destination 3",
                             controller.planet3, controller.vehicle3),
-                        planetAndVehicle(controller, "Destination 4",
+                        planetAndVehicle(controller, planets4, "Destination 4",
                             controller.planet4, controller.vehicle4),
                         Text(
                           'Total time: ${controller.totalTime}',
@@ -79,6 +104,25 @@ class HomeView extends GetView<HomeController> {
                         ),
                       ],
                     ),
+
+                    //   [
+                    //     planetAndVehicle(controller, planets1, "Destination 1",
+                    //         controller.planet1, controller.vehicle1),
+                    //     planetAndVehicle(controller, planets2, "Destination 2",
+                    //         controller.planet2, controller.vehicle2),
+                    //     planetAndVehicle(controller, planets3, "Destination 3",
+                    //         controller.planet3, controller.vehicle3),
+                    //     planetAndVehicle(controller, planets4, "Destination 4",
+                    //         controller.planet4, controller.vehicle4),
+                    //     Text(
+                    //       'Total time: ${controller.totalTime}',
+                    //       style: const TextStyle(
+                    //         color: AppColors.white,
+                    //         fontSize: 25,
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
 
                     const SizedBox(
                         height: 110), // Review if this large space is necessary
@@ -118,47 +162,65 @@ class HomeView extends GetView<HomeController> {
 
   Column planetAndVehicle(
     HomeController controller,
+    List<Planet> planetList,
     String destination,
-    RxString planet,
-    RxString vehicle,
+    Rx<Planet> planet,
+    Rx<Vehicle> vehicle,
   ) {
     return Column(
       children: [
         PillDropdownButton(
           width: 130,
-          dropDownList: controller.dropDownPlanetList,
-          onSelectionChanged: (String changedValue) {
-            planet.value = changedValue;
+          dropDownList: planetList,
+          onSelectionChanged: (Planet changedPlanet) {
+            planet.value = changedPlanet;
+            controller.update(); // Refresh UI when planet changes
           },
           destination: destination,
         ),
         const SizedBox(height: 30),
-        Obx(
-          () => Opacity(
-            opacity: planet.value == "" ? 0 : 1,
-            child: SizedBox(
-              height: 200,
-              width: 220,
-              child: ListView(
-                shrinkWrap: true,
-                children: controller.vehicles.map((spaceCraft) {
-                  return RadioListTile<String>(
-                    title: Text(
-                      '${spaceCraft.name} (${spaceCraft.totalNo})',
-                      style: const TextStyle(color: AppColors.white),
-                    ),
-                    activeColor: Colors.white,
-                    value: spaceCraft.name ?? "",
-                    groupValue: vehicle.value,
-                    onChanged: (String? newValue) {
-                      vehicle.value = newValue!;
-                    },
-                  );
-                }).toList(),
+        Obx(() => Visibility(
+              visible: planet.value.name != null, // Ensure a planet is selected
+              child: SizedBox(
+                height: 200,
+                width: 220,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: controller.vehicles.map((spaceCraft) {
+                    bool isDisabled = (planet.value.distance ?? 0) >
+                        (spaceCraft.maxDistance ?? 0);
+                    return RadioListTile<Vehicle>(
+                      title: Text(
+                        '${spaceCraft.name} (${spaceCraft.totalNo})',
+                        style: TextStyle(
+                            color:
+                                isDisabled ? AppColors.grey : AppColors.white),
+                      ),
+                      activeColor: Colors.white,
+                      value: spaceCraft,
+                      groupValue: vehicle.value,
+                      onChanged: isDisabled
+                          ? null
+                          : (Vehicle? changedVehicle) {
+                              if (changedVehicle != null &&
+                                  changedVehicle.totalNo! > 0) {
+                                vehicle.value = changedVehicle;
+                                controller.decrementVehicleCount(
+                                    changedVehicle); // Use the new method
+                              }
+                              // if (changedVehicle != null &&
+                              //     changedVehicle.totalNo! > 0) {
+                              //   vehicle.value = changedVehicle;
+                              //   changedVehicle.totalNo--; // Decrement the count
+                              //   controller
+                              //       .update(); // Refresh UI when vehicle changes
+                              // }
+                            },
+                    );
+                  }).toList(),
+                ),
               ),
-            ),
-          ),
-        ),
+            )),
       ],
     );
   }

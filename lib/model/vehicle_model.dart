@@ -21,4 +21,12 @@ class Vehicle {
     data['speed'] = speed;
     return data;
   }
+
+  Vehicle copyWith({String? name, int? maxDistance, int? totalNo}) {
+    return Vehicle(
+      name: name ?? this.name,
+      maxDistance: maxDistance ?? this.maxDistance,
+      totalNo: totalNo ?? this.totalNo,
+    );
+  }
 }
