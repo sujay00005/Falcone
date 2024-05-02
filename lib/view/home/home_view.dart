@@ -127,7 +127,10 @@ class HomeView extends GetView<HomeController> {
                     const SizedBox(
                         height: 110), // Review if this large space is necessary
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        print(
+                            "${controller.planet1.value.name} ==>  ${controller.vehicle1.value.name}  ${controller.planet2.value.name} ==>  ${controller.vehicle2.value.name}    ${controller.planet3.value.name} ==>${controller.vehicle3.value.name}  ${controller.planet4.value.name} ==>${controller.vehicle4.value.name}");
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.lightBlueAccent,
                         shape: RoundedRectangleBorder(
@@ -202,19 +205,23 @@ class HomeView extends GetView<HomeController> {
                       onChanged: isDisabled
                           ? null
                           : (Vehicle? changedVehicle) {
+                              ///if vehicle selection is not null
                               if (changedVehicle != null &&
                                   changedVehicle.totalNo! > 0) {
+                                print("🦷🦷🦷🦷🦷🦷");
+                                print(changedVehicle.name);
+                                print(vehicle.value.name);
+
+                                ///if the value of the radio is changed
+                                if (vehicle.value.name != null) {
+                                  controller
+                                      .incrementVehicleCount(vehicle.value);
+                                }
+
                                 vehicle.value = changedVehicle;
-                                controller.decrementVehicleCount(
-                                    changedVehicle); // Use the new method
+                                controller
+                                    .decrementVehicleCount(changedVehicle);
                               }
-                              // if (changedVehicle != null &&
-                              //     changedVehicle.totalNo! > 0) {
-                              //   vehicle.value = changedVehicle;
-                              //   changedVehicle.totalNo--; // Decrement the count
-                              //   controller
-                              //       .update(); // Refresh UI when vehicle changes
-                              // }
                             },
                     );
                   }).toList(),

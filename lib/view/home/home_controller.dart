@@ -21,12 +21,8 @@ class HomeController extends GetxController {
 
   List<Planet> planets = [];
 
-  // RxList<Planet> planet1List = RxList<Planet>();
-  // RxList<Planet> planet2List = RxList<Planet>();
-  // RxList<Planet> planet3List = RxList<Planet>();
-  // RxList<Planet> planet4List = RxList<Planet>();
-
   RxList<Vehicle> vehicles = RxList<Vehicle>();
+  List vehiclesCopy = [];
 
   var dropDownPlanetList = <String>[].obs;
   var vehicleNumberList = [1, 2, 1, 3].obs;
@@ -40,8 +36,6 @@ class HomeController extends GetxController {
   }
 
   Future<void> getVehicles() async {
-    print("🌈🌈🌈🌈🌈🌈🌈🌈🌈");
-
     try {
       var data = await ApiCall().getVehicles();
       var x = jsonDecode(data.bodyString!);
@@ -52,6 +46,8 @@ class HomeController extends GetxController {
         vehicleList.add(vehicles[i].name ?? "");
         vehicleNumberList.add(vehicles[i].totalNo ?? 0);
       }
+      vehiclesCopy.addAll(vehicles);
+      print(vehiclesCopy);
       print(vehicles);
     } catch (e) {
       print("❌❌❌❌❌");
@@ -70,14 +66,6 @@ class HomeController extends GetxController {
         planets.add(Planet.fromJson(x[i]));
         dropDownPlanetList.add(planets[i].name ?? "");
       }
-      print("🤪🤪🤪🤪🤪🤪🤪");
-      print(planets.length);
-      // planet2List.addAll(planet1List);
-      // planet3List.addAll(planet1List);
-      // planet4List.addAll(planet1List);
-      // print("🤪🤪🤪🤪🤪🤪🤪");
-      // print(
-      //     "${planet1List.length}   ${planet2List.length}  ${planet3List.length}    ${planet4List.length}");
     } catch (e) {
       print("❌❌❌❌❌");
       print("Error getting Planets $e");
@@ -93,60 +81,28 @@ class HomeController extends GetxController {
         maxDistance: vehicles[index].maxDistance,
         totalNo: vehicles[index].totalNo! - 1,
       );
+      vehicle = vehicles[index];
       update(); // Notify listeners of the update
     }
   }
 
-// void getPlanets() async {
-  //   isDataLoading.value = true;
-  //
-  //   print("🌈");
-  //   print("🌈");
-  //   print("🌈");
-  //   print("🌈");
-  //
-  //   _apiHelper.getVehicles().futureValue((value) {
-  //     print("😆😆");
-  //     print(value.toString());
-  //     print(value);
-  //     var data = SpaceCraft.fromJson(value);
-  //   }, onError: (error) {
-  //     if (kDebugMode) {
-  //       print("Get 😆😆😆😆😆😆😆😆😆😆 $error");
-  //     }
-  //   });
-  //   try {
-  //     _apiHelper.getPlanets().futureValue((value) {
-  //       print("😆😆😆😆");
-  //       print(value);
-  //       print(value.toString());
-  //
-  //       // planets = Planet.fromJson(json)
-  //     }, onError: (error) {
-  //       if (kDebugMode) {
-  //         print("Get Shows $error");
-  //       }
-  //     });
-  //     // print("🌈🌈🌈🌈🌈");
-  //     // var value = await _apiHelper.getPlanets();
-  //     // print("😆😆😆😆");
-  //     // print(value.toString());
-  //     //
-  //     // // value.forEach((v) {
-  //     // //   planets.add(Planet.fromJson(v));
-  //     // // });
-  //     //
-  //     // print("😆😆😆😆😆😆😆😆😆");
-  //     // print(planets);
-  //     // print(planets[0].name);
-  //     //
-  //     // isDataLoading.value = false;
-  //   } catch (error) {
-  //     print("XXXXXX");
-  //     isDataLoading.value = false;
-  //     if (kDebugMode) {
-  //       print("Get Planet Data $error");
-  //     }
-  //   }
-  // }
+  void incrementVehicleCount(Vehicle vehicle) {
+    // Find the vehicle in the list and decrement its count
+    int index = -1;
+    for (int i = 0; i < vehicles.length; i++) {
+      if (vehicles[i].name == vehicle.name) {
+        index = i;
+        break;
+      }
+    }
+
+    if (index != -1 && vehicles[index].totalNo! < vehiclesCopy[index].totalNo) {
+      vehicles[index] = Vehicle(
+        name: vehicles[index].name,
+        maxDistance: vehicles[index].maxDistance,
+        totalNo: vehicles[index].totalNo! + 1,
+      );
+      update(); // Notify listeners of the update
+    }
+  }
 }
