@@ -47,8 +47,8 @@ class HomeController extends GetxController {
         vehicleNumberList.add(vehicles[i].totalNo ?? 0);
       }
       vehiclesCopy.addAll(vehicles);
-      print(vehiclesCopy);
-      print(vehicles);
+      // print(vehiclesCopy);
+      // print(vehicles);
     } catch (e) {
       print("❌❌❌❌❌");
       print("Error getting Vehicles $e");
@@ -80,6 +80,7 @@ class HomeController extends GetxController {
         name: vehicles[index].name,
         maxDistance: vehicles[index].maxDistance,
         totalNo: vehicles[index].totalNo! - 1,
+        speed: vehicles[index].speed,
       );
       vehicle = vehicles[index];
       update(); // Notify listeners of the update
@@ -87,7 +88,6 @@ class HomeController extends GetxController {
   }
 
   void incrementVehicleCount(Vehicle vehicle) {
-    // Find the vehicle in the list and decrement its count
     int index = -1;
     for (int i = 0; i < vehicles.length; i++) {
       if (vehicles[i].name == vehicle.name) {
@@ -101,6 +101,7 @@ class HomeController extends GetxController {
         name: vehicles[index].name,
         maxDistance: vehicles[index].maxDistance,
         totalNo: vehicles[index].totalNo! + 1,
+        speed: vehicles[index].speed,
       );
       update(); // Notify listeners of the update
     }

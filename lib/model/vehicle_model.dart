@@ -22,11 +22,12 @@ class Vehicle {
     return data;
   }
 
-  Vehicle copyWith({String? name, int? maxDistance, int? totalNo}) {
+  Vehicle copyWith({String? name, int? maxDistance, int? totalNo, int? speed}) {
     return Vehicle(
       name: name ?? this.name,
       maxDistance: maxDistance ?? this.maxDistance,
       totalNo: totalNo ?? this.totalNo,
+      speed: speed ?? this.speed,
     );
   }
 }

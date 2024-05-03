@@ -105,25 +105,6 @@ class HomeView extends GetView<HomeController> {
                       ],
                     ),
 
-                    //   [
-                    //     planetAndVehicle(controller, planets1, "Destination 1",
-                    //         controller.planet1, controller.vehicle1),
-                    //     planetAndVehicle(controller, planets2, "Destination 2",
-                    //         controller.planet2, controller.vehicle2),
-                    //     planetAndVehicle(controller, planets3, "Destination 3",
-                    //         controller.planet3, controller.vehicle3),
-                    //     planetAndVehicle(controller, planets4, "Destination 4",
-                    //         controller.planet4, controller.vehicle4),
-                    //     Text(
-                    //       'Total time: ${controller.totalTime}',
-                    //       style: const TextStyle(
-                    //         color: AppColors.white,
-                    //         fontSize: 25,
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
-
                     const SizedBox(
                         height: 110), // Review if this large space is necessary
                     ElevatedButton(
@@ -182,52 +163,52 @@ class HomeView extends GetView<HomeController> {
           destination: destination,
         ),
         const SizedBox(height: 30),
-        Obx(() => Visibility(
-              visible: planet.value.name != null, // Ensure a planet is selected
-              child: SizedBox(
-                height: 200,
-                width: 220,
-                child: ListView(
-                  shrinkWrap: true,
-                  children: controller.vehicles.map((spaceCraft) {
-                    bool isDisabled = (planet.value.distance ?? 0) >
-                        (spaceCraft.maxDistance ?? 0);
-                    return RadioListTile<Vehicle>(
-                      title: Text(
-                        '${spaceCraft.name} (${spaceCraft.totalNo})',
-                        style: TextStyle(
-                            color:
-                                isDisabled ? AppColors.grey : AppColors.white),
-                      ),
-                      activeColor: Colors.white,
-                      value: spaceCraft,
-                      groupValue: vehicle.value,
-                      onChanged: isDisabled
-                          ? null
-                          : (Vehicle? changedVehicle) {
-                              ///if vehicle selection is not null
-                              if (changedVehicle != null &&
-                                  changedVehicle.totalNo! > 0) {
-                                print("🦷🦷🦷🦷🦷🦷");
-                                print(changedVehicle.name);
-                                print(vehicle.value.name);
-
-                                ///if the value of the radio is changed
-                                if (vehicle.value.name != null) {
-                                  controller
-                                      .incrementVehicleCount(vehicle.value);
-                                }
-
-                                vehicle.value = changedVehicle;
-                                controller
-                                    .decrementVehicleCount(changedVehicle);
+        Obx(
+          () => Visibility(
+            visible: planet.value.name != null, // Ensure a planet is selected
+            child: SizedBox(
+              height: 200,
+              width: 220,
+              child: ListView(
+                shrinkWrap: true,
+                children: controller.vehicles.map((spaceCraft) {
+                  bool isDisabled = (planet.value.distance ?? 0) >
+                      (spaceCraft.maxDistance ?? 0);
+                  return RadioListTile<Vehicle>(
+                    title: Text(
+                      '${spaceCraft.name} (${spaceCraft.totalNo})',
+                      style: TextStyle(
+                          color: isDisabled ? AppColors.grey : AppColors.white),
+                    ),
+                    activeColor: Colors.white,
+                    toggleable: false,
+                    value: spaceCraft,
+                    groupValue: vehicle.value,
+                    onChanged: isDisabled
+                        ? null
+                        : (Vehicle? changedVehicle) {
+                            ///if vehicle selection is not null
+                            if (changedVehicle != null &&
+                                changedVehicle.totalNo! > 0) {
+                              ///if the value of the radio is changed
+                              if (vehicle.value.name != null) {
+                                controller.incrementVehicleCount(vehicle.value);
                               }
-                            },
-                    );
-                  }).toList(),
-                ),
+
+                              controller.decrementVehicleCount(changedVehicle);
+
+                              int ind = controller.vehicles.indexWhere(
+                                  (vehicle) =>
+                                      vehicle.name == changedVehicle.name);
+                              vehicle.value = controller.vehicles[ind];
+                            }
+                          },
+                  );
+                }).toList(),
               ),
-            )),
+            ),
+          ),
+        ),
       ],
     );
   }
