@@ -19,11 +19,12 @@ class ApiCall extends GetConnect {
     final headers = {
       'Accept': 'application/json',
     };
-    return post('token/', {}, headers: headers);
+    return post('https://findfalcone.geektrust.com/token', {},
+        headers: headers);
   }
 
   // @override
   // Future<Response<dynamic>> postFindFalcone(ModelName model) {
-  //   return post('find/', jsonEncode(model.toJson()));
+  //   return post('find', jsonEncode(model.toJson()));
   // }
 }

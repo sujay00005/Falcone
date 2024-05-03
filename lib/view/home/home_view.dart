@@ -38,105 +38,137 @@ class HomeView extends GetView<HomeController> {
         return SafeArea(
           child: Scaffold(
             backgroundColor: AppColors.kPrimaryColor,
-            body: SingleChildScrollView(
-              // Allows the column to be scrollable
-              child: Center(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          child: const Text(
-                            'Reset',
-                            style: TextStyle(color: AppColors.white),
-                          ),
-                          onPressed: () {},
-                        ),
-                        const Text(
-                          ' | ',
-                          style: TextStyle(color: AppColors.white),
-                        ),
-                        TextButton(
-                          child: const Text(
-                            'GeekTrust Home',
-                            style: TextStyle(color: AppColors.white),
-                          ),
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
-                    const Text(
-                      'Finding Falcone!',
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontSize: 35,
-                      ),
-                    ),
-                    const SizedBox(height: 50),
-                    const Text(
-                      'Select planets you want to search in:',
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontSize: 21,
-                      ),
-                    ),
-                    const SizedBox(height: 35),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        planetAndVehicle(controller, planets1, "Destination 1",
-                            controller.planet1, controller.vehicle1),
-                        planetAndVehicle(controller, planets2, "Destination 2",
-                            controller.planet2, controller.vehicle2),
-                        planetAndVehicle(controller, planets3, "Destination 3",
-                            controller.planet3, controller.vehicle3),
-                        planetAndVehicle(controller, planets4, "Destination 4",
-                            controller.planet4, controller.vehicle4),
-                        Text(
-                          'Total time: ${controller.totalTime}',
-                          style: const TextStyle(
-                            color: AppColors.white,
-                            fontSize: 25,
-                          ),
-                        ),
-                      ],
-                    ),
+            body: Obx(
+              () => controller.isDataLoading.value
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : SingleChildScrollView(
+                      child: Center(
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  child: const Text(
+                                    'Reset',
+                                    style: TextStyle(color: AppColors.white),
+                                  ),
+                                  onPressed: () {},
+                                ),
+                                const Text(
+                                  ' | ',
+                                  style: TextStyle(color: AppColors.white),
+                                ),
+                                TextButton(
+                                  child: const Text(
+                                    'GeekTrust Home',
+                                    style: TextStyle(color: AppColors.white),
+                                  ),
+                                  onPressed: () {},
+                                ),
+                              ],
+                            ),
+                            const Text(
+                              'Finding Falcone!',
+                              style: TextStyle(
+                                color: AppColors.white,
+                                fontSize: 35,
+                              ),
+                            ),
+                            const SizedBox(height: 50),
+                            const Text(
+                              'Select planets you want to search in:',
+                              style: TextStyle(
+                                color: AppColors.white,
+                                fontSize: 21,
+                              ),
+                            ),
+                            const SizedBox(height: 35),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                planetAndVehicle(
+                                    controller,
+                                    planets1,
+                                    "Destination 1",
+                                    controller.planet1,
+                                    controller.vehicle1),
+                                planetAndVehicle(
+                                    controller,
+                                    planets2,
+                                    "Destination 2",
+                                    controller.planet2,
+                                    controller.vehicle2),
+                                planetAndVehicle(
+                                    controller,
+                                    planets3,
+                                    "Destination 3",
+                                    controller.planet3,
+                                    controller.vehicle3),
+                                planetAndVehicle(
+                                    controller,
+                                    planets4,
+                                    "Destination 4",
+                                    controller.planet4,
+                                    controller.vehicle4),
+                                Text(
+                                  'Total time: ${controller.totalTime}',
+                                  style: const TextStyle(
+                                    color: AppColors.white,
+                                    fontSize: 25,
+                                  ),
+                                ),
+                              ],
+                            ),
 
-                    const SizedBox(
-                        height: 110), // Review if this large space is necessary
-                    ElevatedButton(
-                      onPressed: () {
-                        print(
-                            "${controller.planet1.value.name} ==>  ${controller.vehicle1.value.name}  ${controller.planet2.value.name} ==>  ${controller.vehicle2.value.name}    ${controller.planet3.value.name} ==>${controller.vehicle3.value.name}  ${controller.planet4.value.name} ==>${controller.vehicle4.value.name}");
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.lightBlueAccent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Text(
-                          'Find Falcone!',
-                          style: TextStyle(color: AppColors.white),
+                            const SizedBox(
+                                height:
+                                    110), // Review if this large space is necessary
+                            ElevatedButton(
+                              onPressed: () {
+                                if (controller.planet1.value.name != null &&
+                                    controller.vehicle1.value.name != null &&
+                                    controller.planet2.value.name != null &&
+                                    controller.vehicle2.value.name != null &&
+                                    controller.planet3.value.name != null &&
+                                    controller.vehicle3.value.name != null &&
+                                    controller.planet4.value.name != null &&
+                                    controller.vehicle4.value.name != null) {
+                                  controller.postToken();
+                                }
+                                // print(
+                                //     "${controller.planet1.value.name} ==>  ${controller.vehicle1.value.name}  ${controller.planet2.value.name} ==>  ${controller.vehicle2.value.name}    ${controller.planet3.value.name} ==>${controller.vehicle3.value.name}  ${controller.planet4.value.name} ==>${controller.vehicle4.value.name}");
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.lightBlueAccent,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(3),
+                                ),
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(10.0),
+                                child: Text(
+                                  'Find Falcone!',
+                                  style: TextStyle(color: AppColors.white),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            const Text(
+                              'Coding problem - www.findingfalcone',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Coding problem - www.findingfalcone',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ),
           ),
         );
@@ -153,14 +185,24 @@ class HomeView extends GetView<HomeController> {
   ) {
     return Column(
       children: [
-        PillDropdownButton(
-          width: 130,
-          dropDownList: planetList,
-          onSelectionChanged: (Planet changedPlanet) {
-            planet.value = changedPlanet;
-            controller.update(); // Refresh UI when planet changes
-          },
-          destination: destination,
+        Obx(
+          () => controller.isDataLoading.value
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : SingleChildScrollView(
+                  child: Center(
+                    child: PillDropdownButton(
+                      width: 130,
+                      dropDownList: planetList,
+                      onSelectionChanged: (Planet changedPlanet) {
+                        planet.value = changedPlanet;
+                        controller.update(); // Refresh UI when planet changes
+                      },
+                      destination: destination,
+                    ),
+                  ),
+                ),
         ),
         const SizedBox(height: 30),
         Obx(

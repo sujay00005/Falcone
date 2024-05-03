@@ -18,6 +18,9 @@ class HomeController extends GetxController {
   var totalTime = 0.obs;
 
   var isDataLoading = false.obs;
+  var isPosting = false.obs;
+
+  String? _token;
 
   List<Planet> planets = [];
 
@@ -36,6 +39,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> getVehicles() async {
+    isDataLoading.value = true;
     try {
       var data = await ApiCall().getVehicles();
       var x = jsonDecode(data.bodyString!);
@@ -52,11 +56,13 @@ class HomeController extends GetxController {
     } catch (e) {
       print("❌❌❌❌❌");
       print("Error getting Vehicles $e");
+    } finally {
+      isDataLoading.value = false;
     }
   }
 
   Future<void> getPlanets() async {
-    print("🤪🤪🤪🤪🤪🤪🤪");
+    isDataLoading.value = true;
 
     try {
       var data = await ApiCall().getPlanets();
@@ -69,6 +75,8 @@ class HomeController extends GetxController {
     } catch (e) {
       print("❌❌❌❌❌");
       print("Error getting Planets $e");
+    } finally {
+      isDataLoading.value = false;
     }
   }
 
@@ -104,6 +112,22 @@ class HomeController extends GetxController {
         speed: vehicles[index].speed,
       );
       update(); // Notify listeners of the update
+    }
+  }
+
+  Future<void> postToken() async {
+    isPosting.value = true;
+
+    try {
+      var data = await ApiCall().postToken();
+
+      _token = jsonDecode(data.bodyString!)['token'];
+      print(_token);
+    } catch (e) {
+      print("❌❌❌❌❌");
+      print("Error posting for the token $e");
+    } finally {
+      isDataLoading.value = false;
     }
   }
 }
