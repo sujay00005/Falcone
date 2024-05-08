@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:finding_flacone/import.dart';
 
 class ApiCall extends GetConnect {
@@ -23,8 +24,12 @@ class ApiCall extends GetConnect {
         headers: headers);
   }
 
-  // @override
-  // Future<Response<dynamic>> postFindFalcone(ModelName model) {
-  //   return post('find', jsonEncode(model.toJson()));
-  // }
+  Future<Response<dynamic>> postFindFalcone(var postData) {
+    final headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    };
+    return post('https://findfalcone.geektrust.com/find', jsonEncode(postData),
+        headers: headers);
+  }
 }

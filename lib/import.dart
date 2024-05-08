@@ -8,6 +8,13 @@ export 'package:get/get.dart';
 export 'util/colors.dart';
 
 ///Views
+//Home
+export 'view/home/home_view.dart';
+export 'view/home/home_controller.dart';
+
+//Result
+export 'view/result/result_view.dart';
+export 'view/result/result_controller.dart';
 
 ///Service
 export 'service/api_call.dart';

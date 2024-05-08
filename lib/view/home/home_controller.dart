@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:finding_flacone/import.dart';
+import 'package:get/get.dart';
 
 class HomeController extends GetxController {
   var counter = 0.obs;
@@ -15,10 +16,14 @@ class HomeController extends GetxController {
   var vehicle3 = Vehicle().obs;
   var vehicle4 = Vehicle().obs;
 
-  var totalTime = 0.obs;
+  RxInt totalTime = 0.obs;
+  RxInt previousTime = 0.obs;
 
   var isDataLoading = false.obs;
   var isPosting = false.obs;
+
+  String status = "";
+  String foundOnPlanet = "";
 
   String? _token;
 
@@ -35,6 +40,7 @@ class HomeController extends GetxController {
   void onInit() {
     getVehicles();
     getPlanets();
+    postToken();
     super.onInit();
   }
 
@@ -51,8 +57,6 @@ class HomeController extends GetxController {
         vehicleNumberList.add(vehicles[i].totalNo ?? 0);
       }
       vehiclesCopy.addAll(vehicles);
-      // print(vehiclesCopy);
-      // print(vehicles);
     } catch (e) {
       print("❌❌❌❌❌");
       print("Error getting Vehicles $e");
@@ -80,7 +84,7 @@ class HomeController extends GetxController {
     }
   }
 
-  void decrementVehicleCount(Vehicle vehicle) {
+  void decrementVehicleCount(Vehicle vehicle, Planet planet) {
     // Find the vehicle in the list and decrement its count
     int index = vehicles.indexOf(vehicle);
     if (index != -1 && vehicles[index].totalNo! > 0) {
@@ -91,11 +95,12 @@ class HomeController extends GetxController {
         speed: vehicles[index].speed,
       );
       vehicle = vehicles[index];
+      totalTime += planet.distance! ~/ vehicle.speed!;
       update(); // Notify listeners of the update
     }
   }
 
-  void incrementVehicleCount(Vehicle vehicle) {
+  void incrementVehicleCount(Vehicle vehicle, Planet planet) {
     int index = -1;
     for (int i = 0; i < vehicles.length; i++) {
       if (vehicles[i].name == vehicle.name) {
@@ -111,6 +116,8 @@ class HomeController extends GetxController {
         totalNo: vehicles[index].totalNo! + 1,
         speed: vehicles[index].speed,
       );
+
+      totalTime -= planet.distance! ~/ vehicle.speed!;
       update(); // Notify listeners of the update
     }
   }
@@ -121,13 +128,59 @@ class HomeController extends GetxController {
     try {
       var data = await ApiCall().postToken();
 
-      _token = jsonDecode(data.bodyString!)['token'];
+      _token = jsonDecode(data.bodyString!)['token']
       print(_token);
     } catch (e) {
       print("❌❌❌❌❌");
       print("Error posting for the token $e");
     } finally {
       isDataLoading.value = false;
+    }
+  }
+
+  Future<void> postFindingFalcone() async {
+    isPosting.value = true;
+    // print("👑");
+    // print(
+    //     "${planet1.value.name} ${planet2.value.name} ${planet3.value.name} ${planet4.value.name}");
+    // print(
+    //     "${vehicle1.value.name} ${vehicle2.value.name} ${vehicle3.value.name} ${vehicle4.value.name}");
+    // print(_token);
+
+    var postData = {
+      "token": "$_token",
+      "planet_names": [
+        "${planet1.value.name}",
+        "${planet2.value.name}",
+        "${planet3.value.name}",
+        "${planet4.value.name}"
+      ],
+      "vehicle_names": [
+        "${vehicle1.value.name}",
+        "${vehicle2.value.name}",
+        "${vehicle3.value.name}",
+        "${vehicle4.value.name}"
+      ]
+    };
+
+    try {
+      var data = await ApiCall().postFindFalcone(postData);
+
+      var parsedData = jsonDecode(data.bodyString!);
+      status = parsedData['status'];
+
+      if (status == "success") {
+        foundOnPlanet = parsedData['planet_name'];
+      } else {
+        ///Not found on the selected planets
+        print("❌ ${parsedData['status']}");
+      }
+
+      // Navigator.of(Get.context!)
+      //     .push(MaterialPageRoute(builder: (context) => const ResultView()));
+    } catch (e) {
+      print("❌❌❌❌❌❌");
+      print("Error posting for Finding the Falcone $e");
     }
   }
 }

@@ -1,5 +1,4 @@
 import 'package:finding_flacone/import.dart';
-import 'home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -115,11 +114,13 @@ class HomeView extends GetView<HomeController> {
                                     "Destination 4",
                                     controller.planet4,
                                     controller.vehicle4),
-                                Text(
-                                  'Total time: ${controller.totalTime}',
-                                  style: const TextStyle(
-                                    color: AppColors.white,
-                                    fontSize: 25,
+                                Obx(
+                                  () => Text(
+                                    'Total time: ${controller.totalTime}',
+                                    style: const TextStyle(
+                                      color: AppColors.white,
+                                      fontSize: 25,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -138,10 +139,8 @@ class HomeView extends GetView<HomeController> {
                                     controller.vehicle3.value.name != null &&
                                     controller.planet4.value.name != null &&
                                     controller.vehicle4.value.name != null) {
-                                  controller.postToken();
+                                  controller.postFindingFalcone();
                                 }
-                                // print(
-                                //     "${controller.planet1.value.name} ==>  ${controller.vehicle1.value.name}  ${controller.planet2.value.name} ==>  ${controller.vehicle2.value.name}    ${controller.planet3.value.name} ==>${controller.vehicle3.value.name}  ${controller.planet4.value.name} ==>${controller.vehicle4.value.name}");
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.lightBlueAccent,
@@ -214,8 +213,9 @@ class HomeView extends GetView<HomeController> {
               child: ListView(
                 shrinkWrap: true,
                 children: controller.vehicles.map((spaceCraft) {
-                  bool isDisabled = (planet.value.distance ?? 0) >
-                      (spaceCraft.maxDistance ?? 0);
+                  bool isDisabled = ((planet.value.distance ?? 0) >
+                          (spaceCraft.maxDistance ?? 0)) ||
+                      (spaceCraft.totalNo! <= 0);
                   return RadioListTile<Vehicle>(
                     title: Text(
                       '${spaceCraft.name} (${spaceCraft.totalNo})',
@@ -234,10 +234,12 @@ class HomeView extends GetView<HomeController> {
                                 changedVehicle.totalNo! > 0) {
                               ///if the value of the radio is changed
                               if (vehicle.value.name != null) {
-                                controller.incrementVehicleCount(vehicle.value);
+                                controller.incrementVehicleCount(
+                                    vehicle.value, planet.value);
                               }
 
-                              controller.decrementVehicleCount(changedVehicle);
+                              controller.decrementVehicleCount(
+                                  changedVehicle, planet.value);
 
                               int ind = controller.vehicles.indexWhere(
                                   (vehicle) =>
