@@ -128,7 +128,7 @@ class HomeController extends GetxController {
     try {
       var data = await ApiCall().postToken();
 
-      _token = jsonDecode(data.bodyString!)['token']
+      _token = jsonDecode(data.bodyString!)['token'];
       print(_token);
     } catch (e) {
       print("❌❌❌❌❌");
