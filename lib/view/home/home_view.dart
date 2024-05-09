@@ -215,7 +215,8 @@ class HomeView extends GetView<HomeController> {
                 children: controller.vehicles.map((spaceCraft) {
                   bool isDisabled = ((planet.value.distance ?? 0) >
                           (spaceCraft.maxDistance ?? 0)) ||
-                      (spaceCraft.totalNo! <= 0);
+                      ((vehicle.value.name != spaceCraft.name) &&
+                          (spaceCraft.totalNo! <= 0));
                   return RadioListTile<Vehicle>(
                     title: Text(
                       '${spaceCraft.name} (${spaceCraft.totalNo})',

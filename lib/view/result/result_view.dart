@@ -24,7 +24,9 @@ class ResultView extends GetView<ResultController> {
                             'Reset',
                             style: TextStyle(color: AppColors.white),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.offAll(const HomeView());
+                          },
                         ),
                         const Text(
                           ' | ',
@@ -35,7 +37,9 @@ class ResultView extends GetView<ResultController> {
                             'GeekTrust Home',
                             style: TextStyle(color: AppColors.white),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.offAll(const HomeView());
+                          },
                         ),
                       ],
                     ),
@@ -47,20 +51,43 @@ class ResultView extends GetView<ResultController> {
                       ),
                     ),
                     const SizedBox(height: 50),
-                    const Text(
-                      'Select planets you want to search in:',
-                      style: TextStyle(
+                    Text(
+                      controller.successText == "success"
+                          ? controller.successText
+                          : controller.failureText,
+                      style: const TextStyle(
                         color: AppColors.white,
                         fontSize: 21,
                       ),
                     ),
                     const SizedBox(height: 35),
-                    Text("Hello"),
+                    if (controller.successText == "success")
+                      Text(
+                        'Time taken:${controller.totalTime}',
+                        style: const TextStyle(
+                          color: AppColors.white,
+                          fontSize: 21,
+                        ),
+                      ),
+                    if (controller.successText == "success")
+                      const SizedBox(height: 35),
+                    if (controller.successText == "success")
+                      Text(
+                        'Planet found: ${controller.foundOnPlanet}',
+                        style: const TextStyle(
+                          color: AppColors.white,
+                          fontSize: 21,
+                        ),
+                      ),
+                    if (controller.successText == "success")
+                      const SizedBox(height: 35),
 
                     const SizedBox(
                         height: 110), // Review if this large space is necessary
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.offAll(const HomeView());
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.lightBlueAccent,
                         shape: RoundedRectangleBorder(
@@ -70,7 +97,7 @@ class ResultView extends GetView<ResultController> {
                       child: const Padding(
                         padding: EdgeInsets.all(10.0),
                         child: Text(
-                          'Find Falcone!',
+                          'Start Again',
                           style: TextStyle(color: AppColors.white),
                         ),
                       ),

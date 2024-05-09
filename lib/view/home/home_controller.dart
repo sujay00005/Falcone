@@ -176,9 +176,13 @@ class HomeController extends GetxController {
         print("❌ ${parsedData['status']}");
       }
 
-      // Navigator.of(Get.context!)
-      //     .push(MaterialPageRoute(builder: (context) => const ResultView()));
+      Get.to(const ResultView(),
+          arguments: ['$status', '$totalTime', '$foundOnPlanet']);
     } catch (e) {
+      Get.snackbar('Some Error Occurred', '$e',
+          backgroundColor: Colors.white.withOpacity(0.4),
+          maxWidth: 800,
+          snackPosition: SnackPosition.BOTTOM);
       print("❌❌❌❌❌❌");
       print("Error posting for Finding the Falcone $e");
     }
